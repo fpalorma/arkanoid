@@ -79,6 +79,48 @@ function updatePaddle() {
   }
 }
 
+function resetBall() {
+  state.ball.x = CANVAS_W / 2 - state.ball.w / 2;
+  state.ball.y = state.paddle.y - state.ball.h - 4;
+  state.ball.vx = BALL_SPEED * (Math.random() < 0.5 ? 1 : -1);
+  state.ball.vy = -BALL_SPEED;
+}
+
+function update() {
+  if (state.screen !== 'playing') return;
+
+  updatePaddle();
+
+  state.ball.x += state.ball.vx;
+  state.ball.y += state.ball.vy;
+
+  // rebote pared izquierda / derecha
+  if (state.ball.x <= 0) {
+    state.ball.x = 0;
+    state.ball.vx = Math.abs(state.ball.vx);
+  } else if (state.ball.x + state.ball.w >= CANVAS_W) {
+    state.ball.x = CANVAS_W - state.ball.w;
+    state.ball.vx = -Math.abs(state.ball.vx);
+  }
+
+  // rebote techo
+  if (state.ball.y <= 0) {
+    state.ball.y = 0;
+    state.ball.vy = Math.abs(state.ball.vy);
+  }
+
+  // pelota sale por abajo
+  if (state.ball.y + state.ball.h >= CANVAS_H) {
+    state.lives -= 1;
+    if (state.lives <= 0) {
+      state.lives = 0;
+      state.screen = 'gameover';
+    } else {
+      resetBall();
+    }
+  }
+}
+
 function drawHUD() {
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 16px monospace';
@@ -103,7 +145,13 @@ function draw() {
   drawHUD();
 }
 
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
 loadSpritesheet(() => {
   initLevel();
-  draw();
+  requestAnimationFrame(loop);
 });
