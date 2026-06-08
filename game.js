@@ -186,6 +186,16 @@ function draw() {
   drawSprite(ctx, 'paddle', state.paddle.x, state.paddle.y, state.paddle.w, state.paddle.h);
   drawSprite(ctx, 'ball', state.ball.x, state.ball.y, state.ball.w, state.ball.h);
 
+  // explosiones
+  const now = performance.now();
+  state.explosions = state.explosions.filter(ex => now - ex.startTime < EXPLOSION_DURATION);
+  for (const ex of state.explosions) {
+    const progress = (now - ex.startTime) / EXPLOSION_DURATION;
+    const frameIndex = Math.min(Math.floor(progress * 4), 3);
+    const frame = EXPLOSION_FRAMES[ex.color][frameIndex];
+    drawFrame(ctx, frame, ex.x, ex.y, ex.w ?? 32, ex.h ?? 16);
+  }
+
   drawHUD();
 }
 
