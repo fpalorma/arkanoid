@@ -182,6 +182,8 @@ function drawHUD() {
 
 function draw() {
   ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+  ctx.fillStyle = '#1a1a2e';
+  ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
   for (const brick of state.bricks) {
     if (brick.alive) {
