@@ -159,9 +159,15 @@ function update() {
     if (state.lives <= 0) {
       state.lives = 0;
       state.screen = 'gameover';
+      return;
     } else {
       resetBall();
     }
+  }
+
+  // victoria: todos los bloques destruidos
+  if (state.bricks.every(br => !br.alive)) {
+    state.screen = 'win';
   }
 }
 
@@ -197,7 +203,38 @@ function draw() {
   }
 
   drawHUD();
+
+  if (state.screen === 'gameover') drawOverlay('GAME OVER');
+  if (state.screen === 'win')      drawOverlay('¡VICTORIA!');
 }
+
+function drawOverlay(title) {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+  ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+  ctx.textAlign = 'center';
+
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 48px monospace';
+  ctx.fillText(title, CANVAS_W / 2, CANVAS_H / 2 - 40);
+
+  ctx.font = 'bold 24px monospace';
+  ctx.fillText(`Score: ${state.score}`, CANVAS_W / 2, CANVAS_H / 2 + 10);
+
+  ctx.font = '18px monospace';
+  ctx.fillStyle = '#aaa';
+  ctx.fillText('Pulsa R o haz clic para reiniciar', CANVAS_W / 2, CANVAS_H / 2 + 50);
+}
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'r' || e.key === 'R') {
+    if (state.screen === 'gameover' || state.screen === 'win') initLevel();
+  }
+});
+
+canvas.addEventListener('click', () => {
+  if (state.screen === 'gameover' || state.screen === 'win') initLevel();
+});
 
 function loop() {
   update();
