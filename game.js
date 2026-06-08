@@ -109,6 +109,9 @@ function update() {
     state.ball.vy = Math.abs(state.ball.vy);
   }
 
+  const p = state.paddle;
+  const b = state.ball;
+
   // colisión pelota–bloques
   for (const brick of state.bricks) {
     if (!brick.alive) continue;
@@ -123,10 +126,9 @@ function update() {
       state.score += 10;
       state.explosions.push({ x: brick.x, y: brick.y, color: brick.color, startTime: performance.now() });
 
-      // determinar reflexión por qué lado se golpeó
-      const overlapLeft  = (b.x + b.w) - brick.x;
-      const overlapRight = (brick.x + brick.w) - b.x;
-      const overlapTop   = (b.y + b.h) - brick.y;
+      const overlapLeft   = (b.x + b.w) - brick.x;
+      const overlapRight  = (brick.x + brick.w) - b.x;
+      const overlapTop    = (b.y + b.h) - brick.y;
       const overlapBottom = (brick.y + brick.h) - b.y;
       const minH = Math.min(overlapLeft, overlapRight);
       const minV = Math.min(overlapTop, overlapBottom);
@@ -141,8 +143,6 @@ function update() {
   }
 
   // colisión pelota–paleta
-  const p = state.paddle;
-  const b = state.ball;
   if (
     b.x + b.w > p.x &&
     b.x < p.x + p.w &&
