@@ -57,7 +57,31 @@ function initLevel() {
   state.explosions = [];
 }
 
+function drawHUD() {
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 16px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText(`Score: ${state.score}`, 10, 20);
+  ctx.textAlign = 'right';
+  ctx.fillText(`Lives: ${state.lives}`, CANVAS_W - 10, 20);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+
+  for (const brick of state.bricks) {
+    if (brick.alive) {
+      drawSprite(ctx, `block_${brick.color}`, brick.x, brick.y, brick.w, brick.h);
+    }
+  }
+
+  drawSprite(ctx, 'paddle', state.paddle.x, state.paddle.y, state.paddle.w, state.paddle.h);
+  drawSprite(ctx, 'ball', state.ball.x, state.ball.y, state.ball.w, state.ball.h);
+
+  drawHUD();
+}
+
 loadSpritesheet(() => {
   initLevel();
-  console.log('bricks:', state.bricks);
+  draw();
 });
