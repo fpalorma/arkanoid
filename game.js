@@ -57,6 +57,28 @@ function initLevel() {
   state.explosions = [];
 }
 
+const keys = {};
+
+window.addEventListener('keydown', e => { keys[e.key] = true; });
+window.addEventListener('keyup',  e => { keys[e.key] = false; });
+
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  state.paddle.x = Math.max(0, Math.min(CANVAS_W - state.paddle.w, mouseX - state.paddle.w / 2));
+});
+
+const PADDLE_SPEED = 6;
+
+function updatePaddle() {
+  if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
+    state.paddle.x = Math.max(0, state.paddle.x - PADDLE_SPEED);
+  }
+  if (keys['ArrowRight'] || keys['d'] || keys['D']) {
+    state.paddle.x = Math.min(CANVAS_W - state.paddle.w, state.paddle.x + PADDLE_SPEED);
+  }
+}
+
 function drawHUD() {
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 16px monospace';
